@@ -1,0 +1,4 @@
+# Настройки Idea
+.idea
+*.iml
+target
