@@ -11,15 +11,15 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
  * Т.е. получение статистики за минуту будет включать события за 59 предыдущих секунд + произошедшие до момента запроса статистики события текущей секунды
  * Данный вариант выбран в связи с его устойчивостью к большим нагрузкам.
  */
-public class EventCounterImpLowMemory implements IEventCounter {
+public class EventCounterImpArray implements IEventCounter {
     private static final int SECONDS_IN_MINUTE = 60;
     private static final int SECONDS_IN_HOUR = 60 * SECONDS_IN_MINUTE;
     private static final int SECONDS_IN_DAY = 24 * SECONDS_IN_HOUR;
     private final AtomicIntegerArray circularCounterArray = new AtomicIntegerArray(SECONDS_IN_DAY);
     private volatile int currentSecond;
-    private static volatile EventCounterImpLowMemory INSTANCE;
+    private static volatile EventCounterImpArray INSTANCE;
 
-    private EventCounterImpLowMemory() {
+    private EventCounterImpArray() {
         currentSecond = 0;
         SecondUpdater secondUpdater = new SecondUpdater(this);
         secondUpdater.start();
@@ -31,9 +31,9 @@ public class EventCounterImpLowMemory implements IEventCounter {
      */
     public static IEventCounter getInstance() {
         if (INSTANCE == null) {
-            synchronized (EventCounterImpLowMemory.class) {
+            synchronized (EventCounterImpArray.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new EventCounterImpLowMemory();
+                    INSTANCE = new EventCounterImpArray();
                 }
             }
         }
@@ -97,11 +97,11 @@ public class EventCounterImpLowMemory implements IEventCounter {
      */
     class SecondUpdater extends TimerTask {
 
-        private final EventCounterImpLowMemory eventCounter;
+        private final EventCounterImpArray eventCounter;
         private final Timer timer = new Timer(true);
         private static final int DELAY = 1000;// 1 second
 
-        SecondUpdater(EventCounterImpLowMemory eventCounter) {
+        SecondUpdater(EventCounterImpArray eventCounter) {
             this.eventCounter = eventCounter;
         }
 

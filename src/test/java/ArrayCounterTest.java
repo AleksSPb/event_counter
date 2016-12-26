@@ -1,17 +1,17 @@
 /**
  * Created by aleks on 24.12.2016.
  */
-import aparkhomenko.eventcounter.EventCounterImpLowMemory;
+import aparkhomenko.eventcounter.EventCounterImpArray;
 import aparkhomenko.eventcounter.IEventCounter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class SimpleCounterTest {
-    private static IEventCounter counter = EventCounterImpLowMemory.getInstance();
+public class ArrayCounterTest {
+    private static IEventCounter counter = EventCounterImpArray.getInstance();
 
     @Test
-    public void testCounterSecond() {
-        long curRegisteredEvents = counter.getLastHourCounter();
+    public void testCounterMinute() {
+        long curRegisteredEvents = counter.getLastMinuteCounter();
         for (int i = 0; i < 10; i++) {
             counter.registerEvent();
         }
